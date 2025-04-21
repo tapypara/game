@@ -1,0 +1,67 @@
+# depslib dependency file v1.0
+1745078225 source:d:\g\littewizp\background.cpp
+	"background.h"
+
+1745078338 d:\g\littewizp\background.h
+	"graphics.h"
+	"defs.h"
+
+1745174284 d:\g\littewizp\graphics.h
+	<SDL_ttf.h>
+	<SDL.h>
+	<SDL_image.h>
+	"defs.h"
+
+1745079177 d:\g\littewizp\defs.h
+
+1745214331 source:d:\g\littewizp\main.cpp
+	<SDL.h>
+	<SDL_ttf.h>
+	<vector>
+	<map>
+	<cstdlib>
+	<ctime>
+	<algorithm>
+	<cctype>
+	<cmath>
+	<string>
+	<fstream>
+	"graphics.h"
+	"balloon_entity.h"
+	"defs.h"
+	"cloud.h"
+	"menu.h"
+
+1744864866 source:d:\g\littewizp\ballon_entity.cpp
+	<cstdlib>
+	"balloon_entity.h"
+
+1745162587 d:\g\littewizp\balloon_entity.h
+	<SDL.h>
+	"graphics.h"
+
+1745014264 source:d:\g\littewizp\balloon_entity.cpp
+	"balloon_entity.h"
+
+1745161184 source:d:\g\littewizp\cloud.cpp
+	"cloud.h"
+	<cstdlib>
+
+1745131174 d:\g\littewizp\cloud.h
+	<SDL.h>
+	<vector>
+	"graphics.h"
+	"defs.h"
+
+1745198085 source:d:\g\littewizp\menu.cpp
+	<SDL.h>
+	<SDL_ttf.h>
+	<string>
+	<fstream>
+	"graphics.h"
+	"defs.h"
+	"menu.h"
+
+1745197731 d:\g\littewizp\menu.h
+	<SDL.h>
+
