@@ -1,248 +1,163 @@
+#include <iostream>
 #include <SDL.h>
-#include <SDL_ttf.h>
-#include <vector>
-#include <map>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <cctype>
-#include <cmath>
-#include <string>
-#include <fstream>
-#include "graphics.h"
-#include "balloon_entity.h"
+#include <SDL_image.h>
+#include "graphic.h"
 #include "defs.h"
-#include "cloud.h"
-#include "menu.h"
-const char* WINDOW_TITLE = "littlewizp";
+#include <vector>
+#include <math.h>
+using namespace std;
+vector<SDL_Point> currentStroke;
+bool isDrawing = false;
+char convert_goc_to_huong(float angleDeg) {
+    if (angleDeg < 0) angleDeg += 360.0f;
 
-Graphics gfx;
-TTF_Font* font = nullptr;
-SDL_Texture* heartTex = nullptr;
-CloudManager cloud;
-GameState gameState = STATE_MENU;
-std::map<char, SDL_Texture*> glyphTextures;
-std::map<char, SDL_Texture*> popTextures;
-std::vector<char> glyphPool = {'I', 'Z', 'V', 'O', 'F', 'P', '#'};
+    if ((angleDeg >= 315 || angleDeg < 45))   return 'R';
+    if (angleDeg >= 45 && angleDeg < 135)     return 'D';
+    if (angleDeg >= 135 && angleDeg < 225)    return 'L';
+    if (angleDeg >= 225 && angleDeg < 315)    return 'U';
 
-std::vector<BalloonEntity> balloons;
-Uint32 lastSpawn = 0;
-int spawnDelay = 1500;
-const int minSpawnDelay = 500;
-int lives = 3;
-int score = 0;
-bool gameOver = false;
-bool running = true;
-bool soundOn = true;
-SDL_Texture* castleTex = nullptr;
-int highScore = 0;
-// Load font
-TTF_Font* loadFont(const char* path, int size) {
-    TTF_Font* font = TTF_OpenFont(path, size);
-    if (!font) {
-        SDL_Log("Font load error: %s", TTF_GetError());
+    return '?';
+}
+
+string convert_huong_to_string(const std::vector<SDL_Point>& points) {
+    char lastDir;
+    string result;
+  for (size_t i = 1; i < points.size(); ++i) {
+    int dx = points[i].x - points[i - 1].x;
+    int dy = points[i].y - points[i - 1].y;
+
+    float distance = sqrt(dx * dx + dy * dy);
+    if (distance < 10) continue; // Bỏ qua đoạn quá ngắn (lọc nhiễu)
+
+    float angleRad = std::atan2(dy, dx);
+    float angleDeg = angleRad * (180.0f / M_PI);
+    char dir = convert_goc_to_huong(angleDeg);
+
+    if (dir != lastDir) {
+        result += dir;
+        lastDir = dir;
     }
-    return font;
+}
+return result;
+}
+void cbi_ghi_nhan() {
+    currentStroke.clear();
+}
+void ghi_nhan_vecto_diem() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if (currentStroke.empty() ||
+        (abs(x - currentStroke.back().x) + abs(y - currentStroke.back().y)) >= 6) {
+        currentStroke.push_back({x, y});
+    }
 }
 
-// Vẽ điểm
-void renderScores(int score, int highScore) {
-    SDL_Color color = {255, 255, 255, 255};
-    std::string text = "Score: " + std::to_string(score);
-    SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(gfx.renderer, surface);
-
-    int w, h;
-    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-    SDL_Rect dst = {SCREEN_WIDTH - w - 20, 10, w, h};
-    SDL_RenderCopy(gfx.renderer, texture, nullptr, &dst);
-
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-
-    // High score
-    std::string hiText = "High: " + std::to_string(highScore);
-    surface = TTF_RenderText_Blended(font, hiText.c_str(), color);
-    texture = SDL_CreateTextureFromSurface(gfx.renderer, surface);
-    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
-    SDL_Rect hiDst = {SCREEN_WIDTH - w - 20, 10 + h + 5, w, h};
-    SDL_RenderCopy(gfx.renderer, texture, nullptr, &hiDst);
-
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-}
-
-// Khởi tạo game
-void initGame() {
-    gfx.init();
-    font = loadFont("assets/font.ttf", 24);
-    heartTex = gfx.loadTexture("assets/heart.png");
-    cloud.init(gfx);
-    lastSpawn = SDL_GetTicks();
-    loadHighScore();
-    glyphTextures['I'] = gfx.loadTexture("assets/balloon_i.png");
-    glyphTextures['Z'] = gfx.loadTexture("assets/balloon_z.png");
-    glyphTextures['V'] = gfx.loadTexture("assets/balloon_v.png");
-    glyphTextures['O'] = gfx.loadTexture("assets/balloon_o.png");
-    glyphTextures['F'] = gfx.loadTexture("assets/balloon_f.png");
-    glyphTextures['P'] = gfx.loadTexture("assets/balloon_pi.png");
-    glyphTextures['#'] = gfx.loadTexture("assets/balloon_vvv.png");
-    castleTex = gfx.loadTexture("assets/castle.png");
-    popTextures['I'] = gfx.loadTexture("assets/balloon_i_pop.png");
-    popTextures['Z'] = gfx.loadTexture("assets/balloon_z_pop.png");
-    popTextures['V'] = gfx.loadTexture("assets/balloon_v_pop.png");
-    popTextures['O'] = gfx.loadTexture("assets/balloon_o_pop.png");
-    popTextures['F'] = gfx.loadTexture("assets/balloon_f_pop.png");
-    popTextures['P'] = gfx.loadTexture("assets/balloon_pi_pop.png");
-    popTextures['#'] = gfx.loadTexture("assets/balloon_vvv_pop.png");
-}
-
-// Xử lý phím bấm
-void handleInput(SDL_Event& e) {
-    if (e.type == SDL_QUIT) running = false;
-
-    if (!gameOver && e.type == SDL_KEYDOWN) {
-        char key = static_cast<char>(e.key.keysym.sym);
-        key = toupper(key);
-        if (key == '3') key = '#';
-
-        int combo = 0;
-        for (auto& b : balloons) {
-            if (!b.isPopped() && b.glyph == key) {
-                b.pop();
-                combo++;
-            }
+char kiem_tra_so_khop(const vector<SDL_Point>& stroke) {
+    string a = convert_huong_to_string(stroke);
+    if(a.length() >= 6 && a[0] == 'D' && a[1] == 'U' && a[2] == 'D' && a[3] == 'U' && a[4] == 'D' && a[5] == 'U') return '#';
+    if(a.length() >= 2 && a[0] == 'D' && a[1] == 'U') return 'v';
+    if(a.length() >= 3 && a[0] == 'R' && a[1] == 'D' || a[1] == 'L' && a[2] == 'R') return 'z';
+    if(a.length() == 1 && a[0] == 'U' || a[0] == 'D') return 'i';
+    if(a.length() >= 7 && a[0] == 'R' && a[a.length()-1] == 'R' ){
+       int countdownonce= 0;
+       for(int i = 2 ;  i < a.length() - 2;  i++ ){
+        if(a[i] == 'D') countdownonce++;
+        if( countdownonce == 1&& i == a.length() - 3) return 'f' ;
+       }}
+        if(a.length() >= 4){
+            int has_L = 0;
+            int has_D = 0;
+            int has_R = 0;
+            int has_U = 0;
+            if(a.length() >= 7 && a[0] == 'U' && a[a.length()-1] =='D'){
+       int countaccept = 0;
+        for(int i = 2 ;  i < a.length() - 2;  i++ ){
+            if(a[i] == 'R') countaccept++;
+            if( countaccept == 1&& i == a.length() - 3)return  'p' ;
         }
-
-        if (combo > 0) {
-    int comboScore = combo * combo;
-    score += comboScore;
-
-    if (score > highScore) {
-        highScore = score;
-    }
-
-    SDL_Log("Combo: %d  +%d pts  Total: %d", combo, comboScore, score);
-}
-
-    }
-}
-
-// Tạo bóng mới
-void spawnBalloon() {
-    Uint32 now = SDL_GetTicks();
-    if (!gameOver && now - lastSpawn >= spawnDelay) {
-        char glyph = glyphPool[rand() % glyphPool.size()];
-        int randX = 150 + rand() % (SCREEN_WIDTH - 379);
-        BalloonEntity b;
-        b.init(glyph, randX, glyphTextures[glyph], popTextures[glyph]);
-        balloons.push_back(b);
-
-        lastSpawn = now;
-        if (spawnDelay > minSpawnDelay) spawnDelay -= 20;
-    }
-}
-
-// Cập nhật bóng, va chạm mây đen, trừ mạng
-void updateGame() {
-    for (auto& b : balloons) {
-        b.update();
-
-        if (!b.isPopped() && cloud.isUnderDarkCloud(b.getX(), b.getY(), 80, 80)) {
-            b.pop();
-            lives--;
-        }
-
-        if (!b.isPopped() && b.isOutOfScreen()) {
-            b.pop();
-            lives--;
+       }
+        for(int i =0 ; i < a.length() ; i++){
+            if((a[i] == 'L') && has_L == 0) has_L = i;
+            if((a[i] == 'D') && has_D == 0) has_D = i;
+            if((a[i] == 'R') && has_R == 0) has_R = i;
+            if((a[i] == 'U') && has_U == 0) has_U = i;
+            if( has_L* has_D *has_R * has_U  ) return 'o';
         }
     }
-    if (lives <= 0) {
-        gameOver = true;
-        gameState = STATE_GAMEOVER;
-        saveHighScore();
-    }
-    balloons.erase(
-        std::remove_if(balloons.begin(), balloons.end(),
-            [](const BalloonEntity& b) { return !b.isAlive(); }),
-        balloons.end()
-    );
 
-    cloud.update();
+       return 'x';
 }
 
-// Vẽ toàn bộ màn hình
-void renderGame() {
-  SDL_RenderClear;
 
-    cloud.render(gfx);
-
-    for (auto& b : balloons) {
-        b.render(gfx);
-    }
-
-    int w, h;
-    SDL_QueryTexture(castleTex, nullptr, nullptr, &w, &h);
-    gfx.renderTexture(castleTex, 0, SCREEN_HEIGHT - h);
-
-    for (int i = 0; i < lives; ++i) {
-        gfx.renderTexture(heartTex, 10 + i * 40, 10);
-    }
-
-    renderScores(score,highScore);
-    gfx.presentScene();
-}
-
-// Hàm chính
-int main(int argc, char* argv[]) {
-    srand(SDL_GetTicks());
-    initGame();
-    loadHighScore();
-    gameState = STATE_MENU;
-
+void waitUntilKeyPressed()
+{
     SDL_Event e;
-    while (running) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) running = false;
-
-            if (gameState == STATE_MENU) {
-                handleMenuMouse(e, gameState);
-            }
-           else if (gameState == STATE_PLAYING) {
-                if (e.type == SDL_KEYDOWN) {
-                    if (e.key.keysym.sym == SDLK_ESCAPE)
-                    gameState = STATE_PAUSED;
-           else handleInput(e);  // 👈 xử lý combo, phá bóng
+    while (true) {
+        if ( SDL_PollEvent(&e) != 0 &&
+             (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
+            return;
+        SDL_Delay(100);
     }
 }
 
-            else if (gameState == STATE_PAUSED && e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_ESCAPE) gameState = STATE_PLAYING;
-                if (e.key.keysym.sym == SDLK_q) gameState = STATE_MENU;
-            }
-            else if (gameState == STATE_GAMEOVER && e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_RETURN) {
-                    gameState = STATE_PLAYING;
-                    balloons.clear(); score = 0; lives = 3; gameOver = false;
-                    spawnDelay = 1500;
-                }
-                if (e.key.keysym.sym == SDLK_ESCAPE) gameState = STATE_MENU;
-            }
+
+int main(int argc, char *argv[])
+{
+    Graphics graphics;
+    graphics.init();
+
+    SDL_Rect rect;
+    rect.x = 100;
+    rect.y = 100;
+    rect.h = 100;
+    rect.w = 100;
+    SDL_SetRenderDrawColor(graphics.renderer, 155, 255, 155, 0);
+    SDL_RenderFillRect(graphics.renderer, &rect);
+    SDL_RenderPresent(graphics.renderer);
+
+    SDL_Rect rect2;
+    rect2.x = 150;
+    rect2.y = 150;
+    rect2.h = 100;
+    rect2.w = 100;
+    SDL_SetRenderDrawColor(graphics.renderer, 155, 155, 255, 0);
+    SDL_RenderFillRect(graphics.renderer, &rect2);
+    SDL_RenderPresent(graphics.renderer);
+
+    SDL_Event event;
+    int x, y;
+
+    while (true) {
+        SDL_GetMouseState(&x, &y);
+
+        // Nếu đang giữ chuột, ghi nhận điểm liên tục
+        if (isDrawing) {
+            ghi_nhan_vecto_diem();
         }
 
-        if (gameState == STATE_MENU) renderMenu();
-        else if (gameState == STATE_PLAYING) {
-            spawnBalloon();
-            updateGame();
-            renderGame();
-        }
-        else if (gameState == STATE_PAUSED || gameState == STATE_GAMEOVER) {
-            renderGame();  // giữ nguyên khung
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    graphics.quit();
+                    exit(0);
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    cbi_ghi_nhan();
+                    ghi_nhan_vecto_diem();
+                    isDrawing = true;
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    isDrawing = false;
+                    char ans;
+                    ans = kiem_tra_so_khop(currentStroke);
+                    cerr << ans <<endl;
+                    break;
+            }
         }
 
         SDL_Delay(16);
     }
-    gfx.quit();
+
+    graphics.quit();
     return 0;
 }
