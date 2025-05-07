@@ -22,7 +22,7 @@ void BalloonEntity::update() {
         y += speed;
     } else if (popping) {
         Uint32 now = SDL_GetTicks();
-        if (now - lastFrameTime > 80) { // thời gian giữa các frame
+        if (now - lastFrameTime > 80) {
             currentFrame++;
             lastFrameTime = now;
 
@@ -34,7 +34,7 @@ void BalloonEntity::update() {
 }
 void BalloonEntity::render(Graphics& gfx) {
     if (popping && popSprite) {
-        SDL_Rect src = { 0, currentFrame * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE }; // nếu sprite pop để dọc
+        SDL_Rect src = { 0, currentFrame * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE }; 
         gfx.blitRect(popSprite, &src, x, y);
     } else if (!popped && texture) {
         gfx.renderTexture(texture, x, y);
@@ -46,7 +46,7 @@ bool BalloonEntity::isOutOfScreen() const {
 bool BalloonEntity::contains(int x, int y) const {
     int bx = getX();
     int by = getY();
-    int bw = 80;  // kích thước sprite nếu khác thì sửa lại
+    int bw = 80;  
     int bh = 80;
     SDL_Rect rect = {bx, by, bw, bh};
     SDL_Point point = {x, y};
