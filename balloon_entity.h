@@ -17,7 +17,6 @@ public:
     char glyph;
     int getX() const { return x; }
     int getY() const { return y; }
-    bool contains(int x, int y) const;
 private:
     SDL_Texture* texture = nullptr;
     SDL_Texture* popSprite = nullptr;
