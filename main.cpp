@@ -17,7 +17,7 @@
 #include "button.h"
 #include "pause.h"
 #include "gameover.h"
-const char* WINDOW_TITLE = "littlewizp";
+const char* WINDOW_TITLE = "POP BALLOONS TIME";
 
 Graphics gfx;
 TTF_Font* font = nullptr;
