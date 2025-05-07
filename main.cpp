@@ -155,6 +155,11 @@ int main(int argc, char* argv[]) {
 
             switch (gameState) {
                 case STATE_MENU:
+                     balloons.clear();
+                    score = 0;
+                    lives = 3;
+                    gameOver = false;
+                    spawnDelay = 1500;
                     updateGameMenu(e, gameState);
                     break;
                 case STATE_PLAYING:
