@@ -182,7 +182,7 @@ int main(int argc, char* argv[]) {
                     else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
                         isDrawing = false;
                         char matched = endStrokeAndCheckMatch(currentStroke);
-                        if (matched != '\0') {
+                        if (matched != 'x') {
                             int combo = 0;
                             for (auto& b : balloons) {
                                 if (!b.isPopped() && b.glyph == matched) {
