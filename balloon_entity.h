@@ -9,7 +9,7 @@ public:
     void init(char glyphChar, int startX, SDL_Texture* normalTexture, SDL_Texture* popTexture);
     void update();
     void render(Graphics& gfx);
-    void pop(); // gọi khi phá bóng
+    void pop(); 
     bool isOutOfScreen() const;
     bool isPopped() const { return popped; }
     bool isAlive() const { return alive; }
