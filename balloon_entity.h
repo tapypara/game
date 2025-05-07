@@ -17,20 +17,19 @@ public:
     char glyph;
     int getX() const { return x; }
     int getY() const { return y; }
+    bool contains(int x, int y) const;
 private:
-    SDL_Texture* texture = nullptr;      // ảnh bóng bình thường
-    SDL_Texture* popSprite = nullptr;    // sprite hiệu ứng nổ
+    SDL_Texture* texture = nullptr;
+    SDL_Texture* popSprite = nullptr;
     int x = 0, y = 0;
     int speed = -2;
     bool popped = false;
     bool alive = true;
-
-    // Hiệu ứng pop animation
     bool popping = false;
     int currentFrame = 0;
     Uint32 lastFrameTime = 0;
     static const int FRAME_SIZE = 80;
-    static const int TOTAL_FRAMES = 6; // bạn điều chỉnh đúng với sprite bạn vẽ
+    static const int TOTAL_FRAMES = 6;
 };
 
 #endif

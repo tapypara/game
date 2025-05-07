@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "defs.h"
-
+#include <string>
 struct Graphics {
     SDL_Renderer *renderer;
 	SDL_Window *window;
@@ -84,6 +84,28 @@ struct Graphics {
 
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
+    void renderText(const std::string& text, int x, int y, SDL_Color color, TTF_Font* font) {
+    SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color);
+    if (!surface) {
+        SDL_Log("TTF_RenderText_Blended error: %s", TTF_GetError());
+        return;
+    }
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+
+    if (!texture) {
+        SDL_Log("SDL_CreateTextureFromSurface error: %s", SDL_GetError());
+        return;
+    }
+
+    int w, h;
+    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+    SDL_Rect dst = {x, y, w, h};
+    SDL_RenderCopy(renderer, texture, nullptr, &dst);
+    SDL_DestroyTexture(texture);
+}
+
     void clear() {
     SDL_RenderClear(renderer);
 }

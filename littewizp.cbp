@@ -32,17 +32,22 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="background.cpp" />
-		<Unit filename="background.h" />
 		<Unit filename="balloon_entity.cpp" />
 		<Unit filename="balloon_entity.h" />
-		<Unit filename="cloud.cpp" />
-		<Unit filename="cloud.h" />
+		<Unit filename="button.cpp" />
+		<Unit filename="button.h" />
 		<Unit filename="defs.h" />
+		<Unit filename="gameover.cpp" />
+		<Unit filename="gameover.h" />
 		<Unit filename="graphics.h" />
+		<Unit filename="highscore.txt" />
+		<Unit filename="logic.cpp" />
+		<Unit filename="logic.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="menu.cpp" />
 		<Unit filename="menu.h" />
+		<Unit filename="pause.cpp" />
+		<Unit filename="pause.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

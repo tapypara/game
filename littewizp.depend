@@ -2,19 +2,20 @@
 1745078225 source:d:\g\littewizp\background.cpp
 	"background.h"
 
-1745078338 d:\g\littewizp\background.h
+1746459808 d:\g\littewizp\background.h
 	"graphics.h"
 	"defs.h"
 
-1745174284 d:\g\littewizp\graphics.h
+1746530505 d:\g\littewizp\graphics.h
 	<SDL_ttf.h>
 	<SDL.h>
 	<SDL_image.h>
 	"defs.h"
+	<string>
 
-1745079177 d:\g\littewizp\defs.h
+1746565170 d:\g\littewizp\defs.h
 
-1745214331 source:d:\g\littewizp\main.cpp
+1746573829 source:d:\g\littewizp\main.cpp
 	<SDL.h>
 	<SDL_ttf.h>
 	<vector>
@@ -29,18 +30,21 @@
 	"graphics.h"
 	"balloon_entity.h"
 	"defs.h"
-	"cloud.h"
 	"menu.h"
+	"logic.h"
+	"button.h"
+	"pause.h"
+	"gameover.h"
 
 1744864866 source:d:\g\littewizp\ballon_entity.cpp
 	<cstdlib>
 	"balloon_entity.h"
 
-1745162587 d:\g\littewizp\balloon_entity.h
+1746551443 d:\g\littewizp\balloon_entity.h
 	<SDL.h>
 	"graphics.h"
 
-1745014264 source:d:\g\littewizp\balloon_entity.cpp
+1746551443 source:d:\g\littewizp\balloon_entity.cpp
 	"balloon_entity.h"
 
 1745161184 source:d:\g\littewizp\cloud.cpp
@@ -53,7 +57,7 @@
 	"graphics.h"
 	"defs.h"
 
-1745198085 source:d:\g\littewizp\menu.cpp
+1746575105 source:d:\g\littewizp\menu.cpp
 	<SDL.h>
 	<SDL_ttf.h>
 	<string>
@@ -61,7 +65,60 @@
 	"graphics.h"
 	"defs.h"
 	"menu.h"
+	"button.h"
 
-1745197731 d:\g\littewizp\menu.h
+1746574059 d:\g\littewizp\menu.h
+	<SDL.h>
+
+1746563664 source:d:\g\littewizp\logic.cpp
+	"logic.h"
+	<cmath>
+
+1746494340 d:\g\littewizp\logic.h
+	<vector>
+	<SDL.h>
+	<string>
+
+1746543628 source:d:\g\littewizp\button.cpp
+	<SDL.h>
+	<SDL_ttf.h>
+	<string>
+	"graphics.h"
+	"defs.h"
+	"menu.h"
+	"button.h"
+
+1746546971 d:\g\littewizp\button.h
+	<SDL.h>
+	<string>
+
+1746574064 source:d:\g\littewizp\pause.cpp
+	<SDL.h>
+	<SDL_ttf.h>
+	<string>
+	<fstream>
+	"graphics.h"
+	"defs.h"
+	"menu.h"
+	"button.h"
+	"pause.h"
+
+1746565589 source:d:\g\littewizp\gameover.cpp
+	<SDL.h>
+	<SDL_ttf.h>
+	<string>
+	<fstream>
+	"graphics.h"
+	"defs.h"
+	"menu.h"
+	"button.h"
+	"vector"
+	"balloon_entity.h"
+	"gameover.h"
+
+1746559154 d:\g\littewizp\gameover.h
+	<SDL.h>
+
+1746548195 d:\g\littewizp\pause.h
 	<SDL.h>
 
