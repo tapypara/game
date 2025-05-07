@@ -43,14 +43,4 @@ void BalloonEntity::render(Graphics& gfx) {
 bool BalloonEntity::isOutOfScreen() const {
     return y + FRAME_SIZE < 0;
 }
-bool BalloonEntity::contains(int x, int y) const {
-    int bx = getX();
-    int by = getY();
-    int bw = 80;  
-    int bh = 80;
-    SDL_Rect rect = {bx, by, bw, bh};
-    SDL_Point point = {x, y};
-    return SDL_PointInRect(&point, &rect);
-}
-
 
