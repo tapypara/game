@@ -10,6 +10,7 @@
 
 Pop Balloon Time là trò chơi mini lấy cảm hứng từ game "Magic Touch: Wizard for Hire".  
 Người chơi nhập vai pháp sư bảo vệ lâu đài khỏi các quả bóng phép đang rơi.  
+Quan sát từ đó, đã làm lại 1 phiên bản đơn giản hơn nhưng vẫn giữ được sự thú vị và lối chơi cơ bản.
 Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần vẽ đúng glyph tương ứng để phá hủy nó.
 
 ---
