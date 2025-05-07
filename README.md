@@ -20,7 +20,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 - Khi khởi động sẽ hiển thị menu với các nút:  
   - Play Game  
   - Save High Score  
-  - Sound ON/OFF(chưa kịp :<) 
+  - Sound ON/OFF
   - Quit Game
 
 - Chọn "Play Game" để bắt đầu chơi.
@@ -74,7 +74,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 ## 📁 Thư mục dự án
 
 - ./assets/ — hình ảnh: bóng, nổ, lâu đài, nền, dot vẽ,...
-- ./sfx/ — âm thanh (tạm chưa có ).
+- ./sfx/ — âm thanh .
 - highscore.txt — lưu điểm cao nhất.
 - README.md — tài liệu mô tả game.
 
@@ -86,6 +86,6 @@ Yêu cầu:
 - SDL2  
 - SDL2_image  
 - SDL2_ttf  
-- SDL2_mixer (tạm chưa có)
+- SDL2_mixer
 ## Ngưỡng điểm tự đánh giá: 7.5 
  Lí do: tốn nhiều thử nghiệm cho phương pháp nhận diện nhưng chưa ưng ý và chỉnh chu các phần khác.
