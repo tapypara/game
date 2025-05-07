@@ -6,10 +6,10 @@
 #include "defs.h"
 #include "menu.h"
 #include "button.h"
+using namespace std;
 extern Graphics gfx;
-extern TTF_Font* font;
-extern bool running;
 extern bool soundOn;
+extern bool running;
 extern int score;
 extern SDL_Texture* BgMenuTex;
 extern int highScore;
@@ -17,36 +17,37 @@ Button playBt   = { 480, 220, 320, 50 ,"Play Game"};
 Button toggleBt  = { 480, 290, 320, 50, "Sound : ON"};
 Button quitBt   = { 480, 430, 320, 50, "Quit Game"};
 Button tutorialBt   = { 480, 360, 320, 50, "Tutorial"};
-void loadHighScore() {
+Button showHiScore = { SCREEN_WIDTH - 250, 40, 320, 50, "tmp"};
+void loadHighScore(){
     std::ifstream in("highscore.txt");
-    if (in.is_open()) {
+    if (in.is_open()){
         in >> highScore;
         in.close();
     }
 }
-void saveHighScore() {
-    if (score > highScore) {
+void saveHighScore(){
+    if (score > highScore){
         highScore = score;
         std::ofstream out("highscore.txt");
-        if (out.is_open()) {
+        if (out.is_open()){
             out << highScore;
             out.close();
         }
     }
-
 }
-void renderMenu() {
+void renderMenu(){
     gfx.clear();
     SDL_Color color = {255, 255, 255, 255};
     int w, h;
     SDL_QueryTexture(BgMenuTex, nullptr, nullptr, &w, &h);
-    gfx.renderTexture(BgMenuTex, 0, SCREEN_HEIGHT - h + 5);
+    gfx.renderTexture(BgMenuTex, 0, SCREEN_HEIGHT - h);
     renderButtonWithText(playBt);
     renderButtonWithText(toggleBt);
     renderButtonWithText(tutorialBt);
     renderButtonWithText(quitBt);
-    std::string hiText = "High: " + std::to_string(highScore);
-    gfx.renderText(hiText, SCREEN_WIDTH - 200, 40, color, font);
+    string hiText = "High: " + to_string(highScore);
+    showHiScore.contents = hiText;
+    renderButtonWithText(showHiScore);
     gfx.presentScene();
 }
 void updateGameMenu(SDL_Event& e,GameState& gameState){

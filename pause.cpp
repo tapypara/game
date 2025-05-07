@@ -1,18 +1,12 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <string>
-#include <fstream>
 #include "graphics.h"
 #include "defs.h"
-#include "menu.h"
 #include "button.h"
 #include "pause.h"
+using namespace std;
 extern Graphics gfx;
-extern TTF_Font* font;
-extern bool running;
-extern bool soundOn;
-extern int score;
-extern int highScore;
 Button resumeBt  = { 480, 360, 320, 50, "Resum Game"};
 Button escapeBt   = { 480, 430, 320, 50, "To Menu"};
 void renderPause() {

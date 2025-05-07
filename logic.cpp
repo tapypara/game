@@ -1,8 +1,8 @@
 #include "logic.h"
 #include <cmath>
 using namespace std;
-
 vector<SDL_Point> currentStroke;
+vector<SDL_Point> drawingPoints;
 char angleToDirection(float angleDeg) {
     if (angleDeg < 0) angleDeg += 360.0f;
     if ((angleDeg >= 315 || angleDeg < 45))   return 'R';
@@ -17,10 +17,8 @@ string convertToDirectionString(const std::vector<SDL_Point>& points) {
     for (size_t i = 1; i < points.size(); ++i) {
         int dx = points[i].x - points[i - 1].x;
         int dy = points[i].y - points[i - 1].y;
-
         float distance = sqrt(dx * dx + dy * dy);
         if (distance < 10) continue;
-
         float angleRad = std::atan2(dy, dx);
         float angleDeg = angleRad * (180.0f / M_PI);
         char dir = angleToDirection(angleDeg);
@@ -31,6 +29,31 @@ string convertToDirectionString(const std::vector<SDL_Point>& points) {
         }
     }
     return result;
+}
+void interpolateAndAdd(SDL_Point last, SDL_Point next) {
+    int dx = next.x - last.x;
+    int dy = next.y - last.y;
+    int steps = std::max(abs(dx), abs(dy));
+    for (int i = 1; i < steps; ++i) {
+        float t = (float)i / steps;
+        int xi = last.x + t * dx;
+        int yi = last.y + t * dy;
+        drawingPoints.push_back({xi, yi});
+    }
+}
+void startStroke() {
+    currentStroke.clear();
+}
+void addPointFromMouse() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    currentStroke.push_back({x, y});
+    if (drawingPoints.empty() || (abs(x - drawingPoints.back().x) + abs(y - drawingPoints.back().y)) >= 3) {
+        if (!currentStroke.empty()) {
+            interpolateAndAdd(drawingPoints.back(), {x, y});
+        }
+        drawingPoints.push_back({x, y});
+    }
 }
 char endStrokeAndCheckMatch(const vector<SDL_Point>& stroke) {
     string a = convertToDirectionString(stroke);

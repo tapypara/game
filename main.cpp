@@ -41,7 +41,6 @@ SDL_Texture* dotTex = nullptr;
 SDL_Texture* BgMenuTex = nullptr;
 SDL_Texture* TutorialTex = nullptr;
 int highScore = 0;
-std::vector<SDL_Point> drawingPoints;
 Button escapeingame = {  SCREEN_WIDTH - 250, 70 , 320 , 50 , "PAUSE"};
 Button escapetutorial = {  SCREEN_WIDTH - 250, 70 , 320 , 50 , "TO MENU"};
 TTF_Font* loadFont(const char* path, int size) {
@@ -134,9 +133,9 @@ void renderGame() {
         gfx.renderTexture(heartTex, 10 + i * 40, 10);
     }
     renderScores(score, highScore);
-    int k = currentStroke.size();
+    int k = drawingPoints.size();
     if(k > 1 ){
-        for(int i = 0; i < k; i++) gfx.renderTexture(dotTex,currentStroke[i].x - wdot/2 , currentStroke[i].y - hdot/2);
+        for(int i = 0; i < k; i++) gfx.renderTexture(dotTex,drawingPoints[i].x - wdot/2 , drawingPoints[i].y - hdot/2);
     }
     gfx.presentScene();
 }
@@ -169,15 +168,15 @@ int main(int argc, char* argv[]) {
                     else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
                         isDrawing = true;
                         currentStroke.clear();
+                        drawingPoints.clear();
                         int x, y;
                         SDL_GetMouseState(&x, &y);
                         currentStroke.push_back({x, y});
+                        drawingPoints.push_back({x, y});
                     }
                     else if (e.type == SDL_MOUSEMOTION && (e.motion.state & SDL_BUTTON_LMASK)) {
                         if (isDrawing) {
-                            int x, y;
-                            SDL_GetMouseState(&x, &y);
-                            currentStroke.push_back({x, y});
+                                addPointFromMouse();
                         }
                     }
                     else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
@@ -199,6 +198,7 @@ int main(int argc, char* argv[]) {
                             }
 
                         }
+                        drawingPoints.clear();
                         currentStroke.clear();
                     }
                     break;

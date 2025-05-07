@@ -34,7 +34,7 @@ void BalloonEntity::update() {
 }
 void BalloonEntity::render(Graphics& gfx) {
     if (popping && popSprite) {
-        SDL_Rect src = { 0, currentFrame * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE }; 
+        SDL_Rect src = { 0, currentFrame * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE };
         gfx.blitRect(popSprite, &src, x, y);
     } else if (!popped && texture) {
         gfx.renderTexture(texture, x, y);
@@ -43,4 +43,5 @@ void BalloonEntity::render(Graphics& gfx) {
 bool BalloonEntity::isOutOfScreen() const {
     return y + FRAME_SIZE < 0;
 }
+
 

@@ -17,6 +17,6 @@ bool clickOnButton(Button bt, SDL_Event& e){
     return false;
 }
 void renderButtonWithText(Button bt){
-     SDL_Color color = {255, 255, 255, 255};
+     SDL_Color color = {0, 255, 255, 255};
     gfx.renderText(bt.contents, bt.x + 30, bt.y + 10, color, font);
 }
