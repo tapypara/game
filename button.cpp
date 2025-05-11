@@ -6,13 +6,15 @@
 #include "menu.h"
 #include "button.h"
 using namespace std;
-extern Graphics gfx;
-extern TTF_Font* font;
+Mix_Chunk *clicking = nullptr;
 bool clickOnButton(Button bt, SDL_Event& e){
     int x , y;
     if(e.type == SDL_MOUSEBUTTONDOWN){
     SDL_GetMouseState(&x, &y);
-    if( x > bt.x && x < bt.x + bt.w && y > bt.y && y < bt.y + bt.h) return true;
+    if( x > bt.x && x < bt.x + bt.w && y > bt.y && y < bt.y + bt.h){
+        gfx.play(clicking);
+    SDL_Delay(500);
+        return true;}
     }
     return false;
 }

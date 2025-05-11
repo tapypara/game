@@ -36,6 +36,7 @@
 		<Unit filename="balloon_entity.h" />
 		<Unit filename="button.cpp" />
 		<Unit filename="button.h" />
+		<Unit filename="contain.h" />
 		<Unit filename="defs.h" />
 		<Unit filename="gameover.cpp" />
 		<Unit filename="gameover.h" />

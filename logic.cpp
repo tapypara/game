@@ -1,8 +1,8 @@
 #include "logic.h"
 #include <cmath>
 using namespace std;
-vector<SDL_Point> currentStroke;
-vector<SDL_Point> drawingPoints;
+std::vector<SDL_Point> currentStroke;
+std::vector<SDL_Point> drawingPoints;
 char angleToDirection(float angleDeg) {
     if (angleDeg < 0) angleDeg += 360.0f;
     if ((angleDeg >= 315 || angleDeg < 45))   return 'R';

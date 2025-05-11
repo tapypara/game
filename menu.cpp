@@ -1,18 +1,6 @@
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <string>
-#include <fstream>
-#include "graphics.h"
-#include "defs.h"
+
 #include "menu.h"
-#include "button.h"
 using namespace std;
-extern Graphics gfx;
-extern bool soundOn;
-extern bool running;
-extern int score;
-extern SDL_Texture* BgMenuTex;
-extern int highScore;
 Button playBt   = { 480, 220, 320, 50 ,"Play Game"};
 Button toggleBt  = { 480, 290, 320, 50, "Sound : ON"};
 Button quitBt   = { 480, 430, 320, 50, "Quit Game"};
@@ -52,12 +40,19 @@ void renderMenu(){
 }
 void updateGameMenu(SDL_Event& e,GameState& gameState){
     loadHighScore();
-    if(clickOnButton(playBt,e)) gameState = STATE_PLAYING;
+    if(clickOnButton(playBt,e)){ gameState = STATE_PLAYING;
+    if(soundOn){
+            Mix_HaltMusic();
+            gfx.play(playingMusic);
+        }
+    }
     if(clickOnButton(toggleBt,e)){
         if(soundOn){ toggleBt.contents ="Sound : OFF";
         soundOn = !soundOn;
+        Mix_HaltMusic();
         }
         else{ toggleBt.contents ="Sound : ON";
+        gfx.play(menuMusic);
         soundOn = !soundOn;
         }
     }

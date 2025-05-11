@@ -1,14 +1,3 @@
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <vector>
-#include <map>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <cctype>
-#include <cmath>
-#include <string>
-#include <fstream>
 #include "graphics.h"
 #include "balloon_entity.h"
 #include "defs.h"
@@ -17,30 +6,37 @@
 #include "button.h"
 #include "pause.h"
 #include "gameover.h"
+#include "sound.h"
 const char* WINDOW_TITLE = "POP BALLOONS TIME";
-
 Graphics gfx;
-TTF_Font* font = nullptr;
-SDL_Texture* heartTex = nullptr;
 GameState gameState = STATE_MENU;
+
 std::map<char, SDL_Texture*> glyphTextures;
 std::map<char, SDL_Texture*> popTextures;
 std::vector<char> glyphPool = {'I', 'Z', 'V', 'O', 'F', 'P', '#'};
 bool isDrawing = false;
 std::vector<BalloonEntity> balloons;
 Uint32 lastSpawn = 0;
-int spawnDelay = 2000;
 const int minSpawnDelay = 500;
+int spawnDelay = 2000;
 int lives = 5;
 int score = 0;
+int highScore = 0;
 bool gameOver = false;
 bool running = true;
 bool soundOn = true;
+TTF_Font* font = nullptr;
+SDL_Texture* skyTex = nullptr;
 SDL_Texture* castleTex = nullptr;
 SDL_Texture* dotTex = nullptr;
 SDL_Texture* BgMenuTex = nullptr;
 SDL_Texture* TutorialTex = nullptr;
-int highScore = 0;
+SDL_Texture* heartTex = nullptr;
+Mix_Music *menuMusic = nullptr;
+Mix_Music *playingMusic = nullptr;
+Mix_Chunk *scoring = nullptr;
+Mix_Chunk *poping = nullptr;
+Mix_Chunk *gameover = nullptr;
 Button escapeingame = {  SCREEN_WIDTH - 250, 70 , 320 , 50 , "PAUSE"};
 Button escapetutorial = {  SCREEN_WIDTH - 250, 70 , 320 , 50 , "TO MENU"};
 TTF_Font* loadFont(const char* path, int size) {
@@ -50,20 +46,17 @@ TTF_Font* loadFont(const char* path, int size) {
     }
     return font;
 }
-
 void renderScores(int score, int highScore) {
-    SDL_Color color = {255, 255, 255, 255};
+    SDL_Color color = {255, 0, 255, 255};
     std::string text = "Score: " + std::to_string(score);
     std::string hiText = "High: " + std::to_string(highScore);
-
     gfx.renderText(text, SCREEN_WIDTH - 300, 10, color, font);
     gfx.renderText(hiText, SCREEN_WIDTH - 300, 40, color, font);
     renderButtonWithText(escapeingame);
 }
-
-
 void initGame() {
     gfx.init();
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     font = loadFont("assets/font.ttf", 24);
     heartTex = gfx.loadTexture("assets/heart.png");
     lastSpawn = SDL_GetTicks();
@@ -85,8 +78,15 @@ void initGame() {
     dotTex = gfx.loadTexture("assets/dot.png");
     BgMenuTex = gfx.loadTexture("assets/bg.png");
     TutorialTex = gfx.loadTexture("assets/tutorial.png");
-}
+    skyTex = gfx.loadTexture("assets/sky.png");
+    menuMusic = gfx.loadMusic("sfx/Menu.mp3");
+    playingMusic = gfx.loadMusic("sfx/Playing.mp3");
+    scoring = gfx.loadSound("sfx/Scoring.mp3");
+    poping = gfx.loadSound("sfx/BalloonPoping.mp3");
+    clicking = gfx.loadSound("sfx/Clicking.mp3");
+    gameover = gfx.loadSound("sfx/GameOver.mp3");
 
+}
 void spawnBalloon() {
     Uint32 now = SDL_GetTicks();
     if (!gameOver && now - lastSpawn >= spawnDelay) {
@@ -99,8 +99,8 @@ void spawnBalloon() {
         if (spawnDelay > minSpawnDelay) spawnDelay -= 20;
     }
 }
-
 void updateGame() {
+    if(gameState == STATE_PLAYING)
     for (auto& b : balloons) {
         b.update();
         if (!b.isPopped() && b.isOutOfScreen()) {
@@ -110,6 +110,7 @@ void updateGame() {
     }
     if (lives <= 0) {
         gameOver = true;
+        gfx.play(gameover);
         gameState = STATE_GAMEOVER;
         saveHighScore();
     }
@@ -119,15 +120,17 @@ void updateGame() {
 }
 
 void renderGame() {
+    int wcas, hcas, wdot, hdot, wsky, hsky;
+    SDL_QueryTexture(castleTex, nullptr, nullptr, &wcas, &hcas);
+    SDL_QueryTexture(dotTex, nullptr, nullptr, &wdot, &hdot);
+    SDL_QueryTexture(skyTex, nullptr, nullptr, &wsky, &hsky);
     SDL_RenderClear(gfx.renderer);
-     SDL_SetRenderDrawColor(gfx.renderer, 135, 206, 235, 255);
-    SDL_RenderClear(gfx.renderer);
+    gfx.renderTexture(skyTex, 0, SCREEN_HEIGHT - hsky);
     for (auto& b : balloons) {
         b.render(gfx);
     }
-    int wcas, hcas,wdot,hdot;
-    SDL_QueryTexture(castleTex, nullptr, nullptr, &wcas, &hcas);
-    SDL_QueryTexture(dotTex, nullptr, nullptr, &wdot, &hdot);
+
+
     gfx.renderTexture(castleTex, 0, SCREEN_HEIGHT - hcas + 5);
     for (int i = 0; i < lives; ++i) {
         gfx.renderTexture(heartTex, 10 + i * 40, 10);
@@ -146,22 +149,23 @@ int main(int argc, char* argv[]) {
     gameState = STATE_MENU;
     SDL_Event e;
     loadHighScore();
+    gfx.play(menuMusic);
     while (running) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 running = false;
             }
-
             switch (gameState) {
                 case STATE_MENU:
                      balloons.clear();
                     score = 0;
-                    lives = 3;
+                    lives = 5;
                     gameOver = false;
                     spawnDelay = 1500;
                     updateGameMenu(e, gameState);
                     break;
                 case STATE_PLAYING:
+
                     if (clickOnButton(escapeingame,e)) {
                         gameState = STATE_PAUSED;
                     }
@@ -187,6 +191,8 @@ int main(int argc, char* argv[]) {
                             for (auto& b : balloons) {
                                 if (!b.isPopped() && b.glyph == matched) {
                                     b.pop();
+                                    gfx.play(poping);
+                                    gfx.play(scoring);
                                     combo++;
                                 }
                             }

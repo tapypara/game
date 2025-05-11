@@ -6,18 +6,16 @@
 	"graphics.h"
 	"defs.h"
 
-1746530505 d:\g\littewizp\graphics.h
+1746858091 d:\g\littewizp\graphics.h
 	<SDL_ttf.h>
 	<SDL.h>
+	<SDL_mixer.h>
 	<SDL_image.h>
 	"defs.h"
 	<string>
 
-1746565170 d:\g\littewizp\defs.h
-
-1746637152 source:d:\g\littewizp\main.cpp
+1746889650 d:\g\littewizp\defs.h
 	<SDL.h>
-	<SDL_ttf.h>
 	<vector>
 	<map>
 	<cstdlib>
@@ -27,6 +25,12 @@
 	<cmath>
 	<string>
 	<fstream>
+	<iostream>
+	<SDL_mixer.h>
+	<SDL_ttf.h>
+	<SDL_image.h>
+
+1746944795 source:d:\g\littewizp\main.cpp
 	"graphics.h"
 	"balloon_entity.h"
 	"defs.h"
@@ -35,6 +39,7 @@
 	"button.h"
 	"pause.h"
 	"gameover.h"
+	"sound.h"
 
 1744864866 source:d:\g\littewizp\ballon_entity.cpp
 	<cstdlib>
@@ -57,20 +62,15 @@
 	"graphics.h"
 	"defs.h"
 
-1746640523 source:d:\g\littewizp\menu.cpp
-	<SDL.h>
-	<SDL_ttf.h>
-	<string>
-	<fstream>
+1746891487 source:d:\g\littewizp\menu.cpp
+	"menu.h"
+
+1746889650 d:\g\littewizp\menu.h
 	"graphics.h"
 	"defs.h"
-	"menu.h"
 	"button.h"
 
-1746639786 d:\g\littewizp\menu.h
-	<SDL.h>
-
-1746638680 source:d:\g\littewizp\logic.cpp
+1746889694 source:d:\g\littewizp\logic.cpp
 	"logic.h"
 	<cmath>
 
@@ -79,7 +79,7 @@
 	<SDL.h>
 	<string>
 
-1746640907 source:d:\g\littewizp\button.cpp
+1746889749 source:d:\g\littewizp\button.cpp
 	<SDL.h>
 	<SDL_ttf.h>
 	<string>
@@ -88,20 +88,17 @@
 	"menu.h"
 	"button.h"
 
-1746546971 d:\g\littewizp\button.h
+1746887410 d:\g\littewizp\button.h
 	<SDL.h>
-	<string>
-
-1746639772 source:d:\g\littewizp\pause.cpp
-	<SDL.h>
-	<SDL_ttf.h>
 	<string>
 	"graphics.h"
+
+1746890827 source:d:\g\littewizp\pause.cpp
 	"defs.h"
 	"button.h"
 	"pause.h"
 
-1746639486 source:d:\g\littewizp\gameover.cpp
+1746891014 source:d:\g\littewizp\gameover.cpp
 	<SDL.h>
 	<string>
 	"graphics.h"
@@ -109,9 +106,16 @@
 	"button.h"
 	"gameover.h"
 
-1746639506 d:\g\littewizp\gameover.h
-	<SDL.h>
+1746890974 d:\g\littewizp\gameover.h
+	"defs.h"
 
-1746639513 d:\g\littewizp\pause.h
-	<SDL.h>
+1746890873 d:\g\littewizp\pause.h
+	"defs.h"
+
+1746861203 source:d:\g\littewizp\sound.cpp
+	"sound.h"
+	"defs.h"
+
+1746861045 d:\g\littewizp\sound.h
+	"graphics.h"
 
