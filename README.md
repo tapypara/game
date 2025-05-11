@@ -8,10 +8,10 @@
 
 ## 🎮 Mô tả trò chơi
 
-Pop Balloon Time là trò chơi mini lấy cảm hứng từ game "Magic Touch: Wizard for Hire".  
+Pop Balloon Time là trò chơi mini lấy cảm hứng từ game "Magic Touch".  
 Người chơi nhập vai pháp sư bảo vệ lâu đài khỏi các quả bóng phép đang rơi.  
 Quan sát từ đó, đã làm lại 1 phiên bản đơn giản hơn nhưng vẫn giữ được sự thú vị và lối chơi cơ bản.
-Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần vẽ đúng glyph tương ứng để phá hủy nó.
+Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần vẽ đúng glyph tương ứng để phá hủy nó trước khi bóng đi quá màn hình.
 
 ---
 
@@ -19,7 +19,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 
 - Khi khởi động sẽ hiển thị menu với các nút:  
   - Play Game  
-  - Save High Score  
+  - Tutorial  
   - Sound ON/OFF
   - Quit Game
 
@@ -42,7 +42,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 
 - Mỗi bóng phá được:
   - Combo càng nhiều → điểm càng cao.
-  - Điểm = số bóng phá được * số bóng phá được.
+  - Điểm = số bóng phá được^2;
 
 - Nếu không phá được bóng:
   - Mất 1 mạng.
@@ -66,7 +66,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 - menu.*, pause.*, gameover.* — các màn hình tương ứng.
 - cloud.* — hiển thị mây bay nền game.
 - button.* — xử lý nút cơ bản.
-- defs.h — các hằng số như kích thước, vị trí,...
+- defs.h — các thư viện cơ bản, hằng số như kích thước, vị trí,...
 - highscore.txt — lưu điểm cao.
 
 ---
@@ -74,7 +74,7 @@ Mỗi quả bóng mang một ký tự phép (glyph), và người chơi cần v�
 ## 📁 Thư mục dự án
 
 - ./assets/ — hình ảnh: bóng, nổ, lâu đài, nền, dot vẽ,...
-- ./sfx/ — âm thanh .
+- ./sfx/ — âm thanh: nhạc menu, nhạc nền, âm thanh bóng nổ,...
 - highscore.txt — lưu điểm cao nhất.
 - README.md — tài liệu mô tả game.
 
@@ -87,5 +87,5 @@ Yêu cầu:
 - SDL2_image  
 - SDL2_ttf  
 - SDL2_mixer
-## Ngưỡng điểm tự đánh giá: 7.5 
+## Ngưỡng điểm tự đánh giá: 7.5+ 
  Lí do: tốn nhiều thử nghiệm cho phương pháp nhận diện nhưng chưa ưng ý và chỉnh chu các phần khác.
